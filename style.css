@@ -1,0 +1,109 @@
+/* ===== フィッシングメール鑑定所 の見た目 =====
+   VOICE: 秒で判断、秒で気持ちいい。ゲーセンのノリで学べるセキュリティ
+   IDEA: 受信箱を高速で仕分けるアーケードゲーム。右上の上司がずっと見てる
+   PICTURE: 1通ずつ飛んでくるメールカード、紙飛行機とシュレッダー、表情が変わる上司
+   COLOUR and TYPE: 電撃ブルーの地、イエロー、OKミント、危険ピンク、Dela Gothic One + Mochiy Pop One
+   LAYOUT: 上にタイムと上司、中央にカード、下に大きな2択ボタン */
+:root{color-scheme:light dark;--bg:light-dark(#1446ff,#0a1a6b);--ink:#fff;--yel:#ffe03d;--ok:#1fd39a;--ng:#ff3d6e;--card:#fff;--cardInk:#161a2b;--sub:#5b6378;--panel:light-dark(#fff,#121a3d);--pInk:light-dark(#161a2b,#eef1ff);--pSub:light-dark(#5b6378,#a9b2d6);--line:light-dark(#e3e7f2,#2a356b)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 "Zen Kaku Gothic New",system-ui,sans-serif;overflow-x:clip;min-height:100svh}
+#app{max-width:480px;margin:0 auto;padding:14px 14px 40px;position:relative}
+.scr[hidden],[hidden]{display:none!important}
+h1{font:400 clamp(30px,8vw,40px)/1.1 "Dela Gothic One",sans-serif;margin:18px 0 6px;color:var(--yel);text-shadow:3px 3px 0 #0b1250}
+.tag{font:400 20px "Mochiy Pop One",sans-serif;margin:0 0 16px}
+.box{background:var(--panel);color:var(--pInk);border-radius:18px;padding:16px;margin-bottom:14px}
+.box p{margin:0 0 8px}
+.dom{display:inline-block;background:var(--yel);color:#161a2b;font-weight:700;border-radius:6px;padding:0 6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.two div{border-radius:14px;padding:12px;color:#fff;font:400 18px/1.3 "Mochiy Pop One",sans-serif;text-align:center}
+.two small{display:block;font:500 13px "Zen Kaku Gothic New",sans-serif;opacity:.95;margin-top:4px}
+.big-btn{display:block;width:100%;font:400 24px "Dela Gothic One",sans-serif;min-height:64px;border:0;border-radius:18px;background:var(--yel);color:#161a2b;cursor:pointer;box-shadow:0 6px 0 #b89b00}
+.big-btn:active{transform:translateY(4px);box-shadow:0 2px 0 #b89b00}
+button:focus-visible,input:focus-visible{outline:3px solid var(--yel);outline-offset:3px}
+/* ===== プレイ画面 ===== */
+#play{position:relative}
+.hud{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}
+.tm small{display:block;font:700 12px "Zen Kaku Gothic New";opacity:.8;letter-spacing:.05em}
+.tm b{font:400 34px/1 "Dela Gothic One",sans-serif;color:var(--yel)}
+.pg{font:400 18px "Mochiy Pop One",sans-serif;text-align:center}
+.mute{font:700 13px "Zen Kaku Gothic New";min-height:36px;padding:0 10px;border-radius:99px;border:2px solid rgba(255,255,255,.6);background:transparent;color:#fff;cursor:pointer}
+.bossMini{position:absolute;top:44px;right:0;width:74px;height:74px;transition:transform .2s}
+.bossMini.hit{transform:scale(1.25) rotate(-6deg)}
+.combo{height:44px;margin:8px 0 4px;font:400 28px/44px "Dela Gothic One",sans-serif;color:var(--yel);text-align:left}
+.combo.zone{color:#ff9a1f;text-shadow:0 0 10px #ff5a1f,0 0 22px #ffcc00;animation:flame .35s infinite alternate}
+@keyframes flame{to{text-shadow:0 0 16px #ff3d1f,0 0 30px #ffe03d}}
+.stage{position:relative;height:250px;margin-top:6px}
+.mail{position:absolute;inset:0;background:var(--card);color:var(--cardInk);border-radius:20px;padding:18px;box-shadow:0 10px 0 rgba(0,0,0,.18);touch-action:pan-y;user-select:none;cursor:grab;display:flex;flex-direction:column;gap:10px;animation:enter .22s ease-out}
+@keyframes enter{from{transform:translateY(24px) scale(.92);opacity:0}}
+.mh{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;align-items:center}
+.av{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font:400 22px "Mochiy Pop One";color:#fff}
+.nm{font:700 19px/1.25 "Zen Kaku Gothic New"}
+.ad{display:inline-block;margin-top:2px;font:700 14px "Zen Kaku Gothic New";background:#eef1f8;border-radius:6px;padding:1px 8px;overflow-wrap:anywhere}
+.sj{font:400 clamp(18px,5vw,21px)/1.45 "Mochiy Pop One",sans-serif;margin-top:4px}
+.stamp{position:absolute;top:18px;padding:2px 14px;border:4px solid;border-radius:10px;font:400 26px "Dela Gothic One";opacity:0;pointer-events:none;background:#fff}
+.stamp.l{left:14px;color:var(--ng);transform:rotate(-12deg)}
+.stamp.r{right:14px;color:var(--ok);transform:rotate(12deg)}
+.mail.go-ok{animation:plane .42s ease-in forwards}
+@keyframes plane{40%{transform:translate(10%,-6%) rotate(8deg) scale(.85)}100%{transform:translate(160%,-140%) rotate(40deg) scale(.25);opacity:0}}
+.mail.go-ng{animation:shred .42s ease-in forwards}
+@keyframes shred{100%{transform:translateY(80%) scaleY(.15);opacity:0}}
+.strip{position:absolute;bottom:0;width:10px;height:34px;background:#fff;border-radius:2px;animation:fall .7s ease-in forwards;pointer-events:none}
+@keyframes fall{to{transform:translateY(140px) rotate(var(--r));opacity:0}}
+.limit{height:10px;border-radius:99px;background:rgba(255,255,255,.25);overflow:hidden;margin:14px 0}
+.limit i{display:block;height:100%;width:100%;background:var(--yel);transform-origin:left}
+.limit i.low{background:var(--ng)}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btns button{font:400 22px "Dela Gothic One",sans-serif;min-height:72px;border:0;border-radius:18px;color:#fff;cursor:pointer}
+.btns .ng{background:var(--ng);box-shadow:0 6px 0 #a3163d}
+.btns .ok{background:var(--ok);box-shadow:0 6px 0 #0f8a63}
+.btns button:active{transform:translateY(4px);box-shadow:none}
+.hint{text-align:center;font-size:13px;opacity:.85;margin:12px 0 0}
+.fx{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.pop{position:absolute;left:50%;top:150px;transform:translateX(-50%);font:400 44px "Dela Gothic One";white-space:nowrap;animation:pop .8s ease-out forwards;text-shadow:3px 3px 0 #0b1250}
+@keyframes pop{0%{transform:translateX(-50%) scale(.3);opacity:0}20%{transform:translateX(-50%) scale(1.25);opacity:1}100%{transform:translateX(-50%) translateY(-60px) scale(1);opacity:0}}
+.flash{position:fixed;inset:0;background:var(--ng);opacity:0;pointer-events:none;z-index:5}
+.flash.on{animation:fl .35s}
+@keyframes fl{20%{opacity:.45}}
+#app.shake{animation:sh .35s}
+@keyframes sh{20%{transform:translateX(-10px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}
+body.zone{background:repeating-linear-gradient(115deg,#1446ff 0 30px,#1f55ff 30px 60px);background-size:200% 200%;animation:bgrun .6s linear infinite}
+@keyframes bgrun{to{background-position:68px 0}}
+.bossBig{position:fixed;inset:0;display:grid;place-items:center;z-index:6;pointer-events:none}
+.bossBig .in{display:flex;flex-direction:column;align-items:center;animation:nu .9s ease-out forwards}
+@keyframes nu{0%{transform:translateY(60px) scale(.5);opacity:0}18%{transform:none;opacity:1}80%{opacity:1}100%{opacity:0}}
+.bossBig svg{width:180px;height:180px}
+.bub{background:#fff;color:#161a2b;font:400 22px "Mochiy Pop One";padding:10px 18px;border-radius:18px;margin-bottom:-6px;position:relative;white-space:nowrap}
+.cd{position:fixed;inset:0;display:grid;place-items:center;font:400 120px "Dela Gothic One";color:var(--yel);text-shadow:6px 6px 0 #0b1250;z-index:7;pointer-events:none}
+.cd span{animation:pop2 .55s ease-out}
+@keyframes pop2{from{transform:scale(2);opacity:0}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+/* ===== 結果画面 ===== */
+.res-top{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;align-items:end;margin-top:10px}
+.res-top svg{width:110px;height:110px}
+.say{background:#fff;color:#161a2b;font:400 17px/1.5 "Mochiy Pop One";padding:12px 14px;border-radius:16px 16px 16px 4px}
+.score{text-align:center;margin:16px 0 6px}
+.score .g{font:400 72px/1 "Dela Gothic One";color:var(--yel);text-shadow:4px 4px 0 #0b1250}
+.score .t{font:400 40px/1.2 "Dela Gothic One"}
+.score p{margin:4px 0 0;font-size:14px;opacity:.9}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+input{font:16px "Zen Kaku Gothic New";min-height:52px;padding:0 14px;border-radius:12px;border:2px solid var(--line);background:var(--panel);color:var(--pInk);flex:1 1 150px}
+.sbtn{font:700 16px "Zen Kaku Gothic New";min-height:52px;padding:0 18px;border-radius:12px;border:0;background:var(--yel);color:#161a2b;cursor:pointer}
+.sbtn.gh{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.7)}
+h2{font:400 22px "Dela Gothic One";margin:0 0 6px}
+.note{font-size:13px;color:var(--pSub);margin:0 0 8px}
+ol{list-style:none;margin:0;padding:0}
+ol li{display:grid;grid-template-columns:2em minmax(0,1fr) auto;gap:8px;padding:8px 4px;border-top:1px solid var(--line);align-items:center}
+ol li:first-child{border-top:0}
+ol li.me{background:light-dark(#fff6c2,#3a3410);border-radius:8px}
+ol li.empty{display:block;color:var(--pSub)}
+ol .r{font:400 18px "Dela Gothic One";text-align:center}
+ol .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ol .s{font:400 16px "Dela Gothic One";white-space:nowrap}
+.ex{display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.ex:first-of-type{border-top:0}
+.mk{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font:400 16px "Dela Gothic One";color:#fff}
+.ex b{display:block;font-size:15px}
+.ex span{display:block;font-size:13px;color:var(--pSub)}
+.ex em{display:block;font-style:normal;font-size:14px;margin-top:2px}
