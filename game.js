@@ -297,8 +297,9 @@
     return (await r.json())[0];
   }
 
-  async function renderRank() {
-    const ol = $('list');
+  // listId：表示する場所（'list' は結果画面、'listTop' はトップページ）
+  async function renderRank(listId = 'list') {
+    const ol = $(listId);
     ol.innerHTML = '<li class="empty">読み込み中…</li>';
     let a;
     try { a = await fetchTop(); }
@@ -352,4 +353,8 @@
   });
 
   try { $('name').value = localStorage.getItem(NKEY) || ''; } catch (_) {}
+
+  // トップページを開いたときに、ランキングを読み込んで表示する
+  $('rankNoteTop').textContent = ONLINE ? 'みんなのランキング（上位20人）' : 'この端末の記録';
+  renderRank('listTop');
 }
