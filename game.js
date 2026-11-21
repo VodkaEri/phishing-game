@@ -13,8 +13,8 @@
   // 2つとも空のままだと「この端末だけのランキング」で動きます。
   // Supabaseの準備ができたら、ここに Project URL と anon public key を貼るだけで
   // みんなのランキングに切り替わります。
-  const SUPABASE_URL = '';
-  const SUPABASE_KEY = '';
+  const SUPABASE_URL = 'https://yncvsifethlkbuhjrxti.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_hRm3T8_sqHTvU-7mpV1aBg_GNDM32SZ';
   const ONLINE = Boolean(SUPABASE_URL && SUPABASE_KEY);
 
   const AV_COLORS = ['#ff7a45', '#7b61ff', '#00a3c4', '#e0459b', '#3b9b3b', '#d48a00'];
@@ -267,7 +267,13 @@
   }
   function saveLocal(a) { mem = a; try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }
 
-  const sbHeaders = () => ({ apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' });
+  // 新しい publishable key（sb_publishable_〜）は apikey ヘッダーだけで送る。
+  // 古い anon key（eyJ〜 で始まる）のときだけ Authorization ヘッダーも付ける。
+  const sbHeaders = () => {
+    const h = { apikey: SUPABASE_KEY, 'Content-Type': 'application/json' };
+    if (SUPABASE_KEY.startsWith('eyJ')) h.Authorization = 'Bearer ' + SUPABASE_KEY;
+    return h;
+  };
 
   // 上位20件を取ってくる
   async function fetchTop() {
